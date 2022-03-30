@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='UTF-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>input-range</title>
+    <style>
+        /* 设置背景色 */
+        .range::-webkit-slider-runnable-track {
+            height: 20px;
+            border-radius: 10px;
+            /*将轨道设为圆角的*/
+            /* box-shadow: 0 1px 1px #def3f8, inset 0 0.125em 0.125em #0d1112; */
+            /*轨道内置阴影效果*/
+            /* background-color: red; */
+            /* 颜色会覆盖滑条所有背景色 */
+        }
+
+        .range:focus {
+            /* outline: none; */
+            background-color: red;
+        }
+
+        /* 滑点设置 是个正方形 */
+        .range::-webkit-slider-thumb {
+            /* -webkit-appearance: none; */
+            /* 清除杨树 */
+            height: 2px;
+            width: 16px;
+            /* 宽高设置无效 */
+            margin-top: 0;
+            /*使滑块超出轨道部分的偏移量相等*/
+            border-radius: 30px;
+            /*外观设置为圆形*/
+            border: solid 10px rgba(205, 224, 230, 0.5);
+            /*设置边框 正方形的框*/
+            box-shadow: 0 0.125em 0.125em #8b8b8b;
+            /*添加底部阴影*/
+        }
+
+        /* 自定义进度条样式 */
+        /* 底色样式设置 */
+        #my-range-mask {
+            width: 200px;
+            height: 20px;
+            border-radius: 10px;
+            background-color: #b3b3b3;
+            position: relative;
+        }
+
+        /* 已选择的进度样式 */
+        .progress {
+            width: 50%;
+            height: 100%;
+            border-radius: 10px;
+            background-color: rgb(95, 95, 255);
+        }
+
+        /* 选择按钮样式 */
+        .progress-btn {
+            position: absolute;
+            left: calc(50% - 10px);
+            top: 0;
+            width: 20px;
+            height: 20px;
+            background-color: blue;
+            border-radius: 10px;
+            box-shadow: 0 0 10px red;
+        }
+    </style>
+</head>
+
+<body>
+    <h3>普通滑动，最小值0，最大值10</h3>
+    <p>&lt;input type="range" min="0" max="10"></p>
+    <input type="range" min="0" max="10">
+    <hr />
+    <h3>有刻度的滑动 间隔2</h3>
+    <p>&lt;input id="range" list="tickmarks" type="range" step="2"></p>
+    <input id="range" list="tickmarks" type="range" step="10">
+    <datalist id="tickmarks">
+        <option value="0">小</option>
+        <option value="10"></option>
+        <option value="20"></option>
+        <option value="30"></option>
+        <option value="40"></option>
+        <option value="50">中</option>
+        <option value="60"></option>
+        <option value="70"></option>
+        <option value="80"></option>
+        <option value="90"></option>
+        <option value="100">大</option>
+        <input type="range" min="0" max="10">
+    </datalist>
+    <hr />
+    <h3>自定义样式</h3>
+    <input class="range" type="range" min="0" max="10">
+    <hr />
+    <h3>推荐自定义封装</h3>
+    <div id="my-range-mask">
+        <div class="progress"></div>
+        <div class="progress-btn" draggable="false"></div>
+    </div>
+    <script>
+        const btn = document.querySelector(".progress-btn")
+        const mask = document.querySelector("#my-range-mask")
+        console.dir(mask);
+        console.dir(btn);
+        console.log(mask.clientWidth);
+        console.log(btn.offsetLeft);
+        let startX = 0;
+        btn.onmousedown = function (e) {
+            startX = e.x;
+            mask.addEventListener("mousemove", move)
+        }
+
+        function move(e) {
+            const width = btn.offsetLeft + e.clientX - startX;
+            let left = width > mask.clientWidth ? mask.clientWidth : width;
+            left = left < 0 ? 0 : left;
+            btn.style.left = `${left}px`
+            console.log("开始", e.clientX);
+        }
+        document.onmouseup = function (e) {
+            console.log("结束", e.clientX);
+            mask.removeEventListener("mousemove", move)
+        }
+    </script>
+</body>
+
+</html>
